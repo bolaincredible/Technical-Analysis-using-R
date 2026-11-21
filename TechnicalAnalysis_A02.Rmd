@@ -1,0 +1,48 @@
+---
+title: "BDA400 Assignment 2 - Technical Analysis using R (Preliminary Stage)"
+author: "Bola_Hassan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.width = 9, fig.height = 6)
+source("technical_analysis_functions.R")
+install_if_missing()
+```
+
+## 1. Portfolio configuration
+
+```{r portfolio}
+read_portfolio("portfolio.txt")
+```
+
+## 2. Import stock data
+
+```{r load}
+stocks <- load_stock_data("portfolio.txt", from = Sys.Date() - 365)
+sapply(stocks, nrow)
+```
+
+## 3. Basic statistics
+
+```{r stats}
+results <- calculate_all_statistics(stocks)
+display_statistics_table(results$summary_table)
+```
+
+## 4. Data display
+
+```{r display}
+for (s in names(stocks)) display_stock_data(stocks[[s]], s, n = 5)
+for (s in names(stocks)) display_quote_summary(stocks[[s]], s)
+```
+
+## 5. Visualizations
+
+```{r plots, fig.height=7}
+for (s in names(stocks)) plot_stock_dashboard(results$stats[[s]]$data, s)
+plot_normalized_performance(stocks)
+plot_returns_boxplot(stocks)
+```
